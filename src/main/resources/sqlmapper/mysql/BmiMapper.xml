@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BMI">
+    
+   <insert id="insertBMI" parameterType="Map">
+  INSERT INTO bmi (BMI_UID, USER_ID, GENDER_UID, DATE, HEIGHT, WEIGHT, BMI_RESULT, BMI_TYPE)
+    VALUES (#{BMI_UID}, #{USER_ID},#{GENDER_UID}, NOW(), #{HEIGHT}, #{WEIGHT}, #{BMI_RESULT}, #{BMI_TYPE});
+
+    </insert>
+
+<select id="getUserGender" parameterType="String" resultType="String">
+    SELECT GENDER_UID
+    FROM members
+    WHERE USER_ID = #{USER_ID}
+</select>
+
+
+<select id="resultBMI" parameterType="Map" resultType="String">
+    SELECT  BMI_RESULT, BMI_TYPE
+    FROM bmi
+    WHERE USER_ID = #{USER_ID}
+</select>
+
+<!--차트용-->
+<select id="BMI_avg" parameterType="Map" resultType="Map">
+    SELECT G.GENDER, ROUND(AVG(B.BMI_RESULT), 2) AS AVG_BMI
+    FROM GENDER AS G
+    INNER JOIN BMI AS B
+    ON G.GENDER_UID = B.GENDER_UID
+    GROUP BY G.GENDER;
+</select>
+
+
+<select id="BMI_TYPE_male" parameterType="Map" resultType="Map">
+    SELECT  B.BMI_TYPE, COUNT(B.BMI_TYPE) AS BMI_TYPE_COUNT
+    FROM GENDER AS G
+    INNER JOIN BMI AS B
+    ON G.GENDER_UID = B.GENDER_UID
+    WHERE G.GENDER = '남성'
+    GROUP BY B.BMI_TYPE 
+    ORDER BY CASE B.BMI_TYPE
+            WHEN '저체중' THEN 1
+            WHEN '정상' THEN 2
+            WHEN '과체중' THEN 3
+            WHEN '비만' THEN 4
+            END;
+</select>
+
+<select id="BMI_TYPE_female" parameterType="Map" resultType="Map">
+   SELECT  B.BMI_TYPE, COUNT(B.BMI_TYPE) AS BMI_TYPE_COUNT
+    FROM GENDER AS G
+    INNER JOIN BMI AS B
+    ON G.GENDER_UID = B.GENDER_UID
+    WHERE G.GENDER = '여성'
+    GROUP BY B.BMI_TYPE 
+    ORDER BY CASE B.BMI_TYPE
+            WHEN '저체중' THEN 1
+            WHEN '정상' THEN 2
+            WHEN '과체중' THEN 3
+            WHEN '비만' THEN 4
+            END;
+</select>
+
+</mapper>
+

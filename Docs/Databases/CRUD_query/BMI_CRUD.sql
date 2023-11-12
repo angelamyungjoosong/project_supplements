@@ -1,0 +1,50 @@
+SELECT * FROM project_diet.bmi;
+
+INSERT INTO bmi(BMI_UID, USER_ID, YEAR, HEIGHT, WEIGHT, BMI_RESULT)
+VALUES ('B-21', 'honggd123', '2024', '180', '80', '25.15');
+
+SELECT * 
+FROM project_diet.bmi
+WHERE USER_ID = 'honggd123';
+
+/*추가 - 특정아이디 삭제 */
+
+
+-- 여성 BMI_TYPE COUNT (pie chart)  
+
+SELECT COUNT(B.BMI_TYPE) AS BMI_TYPE_COUNT, B.BMI_TYPE
+FROM GENDER AS G
+INNER JOIN BMI AS B
+ON G.GENDER_UID = B.GENDER_UID
+WHERE G.GENDER = '여성'
+GROUP BY B.BMI_TYPE 
+ORDER BY CASE B.BMI_TYPE
+           WHEN '저체중' THEN 1
+           WHEN '정상' THEN 2
+           WHEN '과체중' THEN 3
+           WHEN '비만' THEN 4
+         END;
+
+-- 남성 BMI_TYPE COUNT  (pie chart) 
+  
+SELECT COUNT(B.BMI_TYPE) AS BMI_TYPE_COUNT, B.BMI_TYPE
+FROM GENDER AS G
+INNER JOIN BMI AS B
+ON G.GENDER_UID = B.GENDER_UID
+WHERE G.GENDER = '남성'
+GROUP BY B.BMI_TYPE 
+ORDER BY CASE B.BMI_TYPE
+           WHEN '저체중' THEN 1
+           WHEN '정상' THEN 2
+           WHEN '과체중' THEN 3
+           WHEN '비만' THEN 4
+         END;
+
+-- 여성/남성별 BMI평균 (bar chart)
+ 
+SELECT G.GENDER, AVG(B.BMI_RESULT) 
+FROM GENDER AS G
+INNER JOIN BMI AS B
+ON G.GENDER_UID = B.GENDER_UID
+GROUP BY G.GENDER ;
+

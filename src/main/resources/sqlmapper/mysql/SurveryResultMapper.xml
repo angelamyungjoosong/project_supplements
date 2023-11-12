@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SurveyResult">
+
+  <select id="surveyresult_no" parameterType="Map" resultType="Map">
+   SELECT T_SURVEY_QUESTION.SURVEY_QUESTION, T_SURVEY_OPT.SURVEY_OPT, COUNT(*)
+   FROM SURVEY_QUESTION AS T_SURVEY_QUESTION
+   INNER JOIN SURVEY_OPT AS T_SURVEY_OPT
+   ON T_SURVEY_QUESTION.SURVEY_QUESTION_ID = T_SURVEY_OPT.SURVEY_QUESTION_ID
+   INNER JOIN SURVEY AS T_SURVEY
+   ON T_SURVEY_OPT.SURVEY_OPT_ID = T_SURVEY.SURVEY_OPT_ID
+   WHERE T_SURVEY_OPT.SURVEY_OPT_ID <![CDATA[<]]> "O-25"
+   GROUP BY T_SURVEY_OPT.SURVEY_OPT_ID
+   ORDER BY T_SURVEY_OPT.SURVEY_OPT_ID ASC
+   ;
+	</select>
+
+   <!--yes통계만 필요함 설문통계페이지에서는!-->
+    <select id="surveyresult_yes" parameterType="Map" resultType="Map">
+   SELECT T_SURVEY_QUESTION.SURVEY_QUESTION, T_SURVEY_OPT.SURVEY_OPT, COUNT(*)
+   FROM SURVEY_QUESTION AS T_SURVEY_QUESTION
+   INNER JOIN SURVEY_OPT AS T_SURVEY_OPT
+   ON T_SURVEY_QUESTION.SURVEY_QUESTION_ID = T_SURVEY_OPT.SURVEY_QUESTION_ID
+   INNER JOIN SURVEY AS T_SURVEY
+   ON T_SURVEY_OPT.SURVEY_OPT_ID = T_SURVEY.SURVEY_OPT_ID
+   WHERE T_SURVEY_OPT.SURVEY_OPT_ID <![CDATA[>]]> "O-24"
+   GROUP BY T_SURVEY_OPT.SURVEY_OPT_ID
+   ORDER BY T_SURVEY_OPT.SURVEY_OPT_ID ASC
+   ;
+	</select> 
+
+   <!-- 설문 통계: 다이어트 보조제별 count -pie chart -->
+    <select id="surveyresult_product" parameterType="Map" resultType="Map">
+      SELECT  SO.SURVEY_OPT,COUNT(SO.SURVEY_OPT) AS SURVEY_OPT_COUNT 
+      FROM SURVEYRESULT AS SR
+      INNER JOIN SURVEY AS S
+      ON SR.SURVEY_UID = S.SURVEY_UID
+      INNER JOIN SURVEY_OPT AS SO
+      ON S.SURVEY_OPT_ID = SO.SURVEY_OPT_ID
+      WHERE S.SURVEY_QUESTION_ID = 'Q-06'
+      GROUP BY SO.SURVEY_OPT
+      ;
+	</select> 
+
+  <!-- 설문 통계: 보조제 복용 원인 count -pie chart -->
+   <select id="surveyresult_cause" parameterType="Map" resultType="Map">
+      SELECT SO.SURVEY_OPT,COUNT(SO.SURVEY_OPT) AS SURVEY_OPT_COUNT
+      FROM SURVEYRESULT AS SR
+      INNER JOIN SURVEY AS S
+      ON SR.SURVEY_UID = S.SURVEY_UID
+      INNER JOIN SURVEY_OPT AS SO
+      ON S.SURVEY_OPT_ID = SO.SURVEY_OPT_ID
+      WHERE S.SURVEY_QUESTION_ID = 'Q-09'
+      GROUP BY SO.SURVEY_OPT
+      ;
+	</select> 
+    
+</mapper>
+
+
+
+ 
